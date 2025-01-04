@@ -44,10 +44,6 @@ public class TelemetryConfigManager extends Config {
         }
     }
 
-    public static TelemetryConfig getConfig() {
-        return config;
-    }
-
     public static void sendTelemetryData(String modId, String modVersion, String game_version) {
         if (config.isEnableTelemetry()) {
             try {
@@ -74,14 +70,14 @@ public class TelemetryConfigManager extends Config {
     }
 
     public static class TelemetryConfig {
-        private boolean enableTelemetry = true;
+        public boolean enableTelemetry;
+
+        public TelemetryConfig() {
+            enableTelemetry = true;
+        }
 
         public boolean isEnableTelemetry() {
             return enableTelemetry;
-        }
-
-        public void setEnableTelemetry(boolean enableTelemetry) {
-            this.enableTelemetry = enableTelemetry;
         }
     }
 }
