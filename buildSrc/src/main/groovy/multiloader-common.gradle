@@ -4,7 +4,7 @@ plugins {
 }
 
 base {
-    archivesName = "${mod_name}-${project.name}-${minecraft_version}"
+    archivesName = "${mod_id}-${project.name}-${minecraft_version}"
 }
 
 java {
@@ -117,7 +117,12 @@ publishing {
     }
     repositories {
         maven {
-            url System.getenv('local_maven_url')
+            name = "GitHubMaven"
+            url = uri("https://maven.pkg.github.com/anviaan/anvians-lib")
+            credentials {
+                username = "anviaan"
+                password = project.findProperty("gpr.token") ?: System.getenv("ANVIAN_GITHUB_TOKEN")
+            }
         }
     }
 }
