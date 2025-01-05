@@ -48,10 +48,10 @@ public class TelemetryConfigManager extends Config {
         return config;
     }
 
-    public static void sendTelemetryData(String modId, String modVersion, String game_version, Boolean isDevelopment) {
+    public static void sendTelemetryData(String modId, String modVersion, String game_version, Boolean isProduction) {
         if (config.isEnableTelemetry()) {
             try {
-                URL url = (!isDevelopment) ? URI.create("https://anvian.net/telemetry/data").toURL() : URI.create("http://localhost:5000/telemetry/data").toURL();
+                URL url = (isProduction) ? URI.create("https://anvian.net/telemetry/data").toURL() : URI.create("http://localhost:5000/telemetry/data").toURL();
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("POST");
                 connection.setRequestProperty("Content-Type", "application/json; utf-8");
