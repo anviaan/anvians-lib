@@ -117,11 +117,11 @@ publishing {
     }
     repositories {
         maven {
-            name = "GitHubMaven"
-            url = uri("https://maven.pkg.github.com/anviaan/anvians-lib")
+            name = "Repsy"
+            url = uri("https://repo.repsy.io/mvn/anvian/anvians-lib")
             credentials {
-                username = "anviaan"
-                password = project.findProperty("gpr.token") ?: System.getenv("ANVIAN_GITHUB_TOKEN")
+                username = "anvian"
+                password = project.findProperty("gpr.token") ?: System.getenv("REPSY_TOKEN")
             }
         }
     }
