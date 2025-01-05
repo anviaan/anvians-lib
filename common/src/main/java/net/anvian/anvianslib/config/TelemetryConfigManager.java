@@ -51,7 +51,7 @@ public class TelemetryConfigManager extends Config {
     public static void sendTelemetryData(String modId, String modVersion, String game_version, Boolean isDevelopment) {
         if (config.isEnableTelemetry()) {
             try {
-                URL url = (isDevelopment) ? URI.create("https://anvian.net/telemetry/data").toURL() : URI.create("http://localhost:5000/telemetry/data").toURL();
+                URL url = (!isDevelopment) ? URI.create("https://anvian.net/telemetry/data").toURL() : URI.create("http://localhost:5000/telemetry/data").toURL();
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("POST");
                 connection.setRequestProperty("Content-Type", "application/json; utf-8");
