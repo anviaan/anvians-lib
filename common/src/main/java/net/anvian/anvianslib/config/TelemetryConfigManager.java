@@ -53,7 +53,7 @@ public class TelemetryConfigManager extends Config {
         return config;
     }
 
-    public static void sendTelemetryData(String modId, String modVersion, String game_version, Boolean isProduction) {
+    public static void sendTelemetryData(String modId, String modVersion, String game_version, String loader , Boolean isProduction) {
         if (config.isEnableTelemetry()) {
             try (CloseableHttpClient client = HttpClientBuilder.create().build()) {
                 URI url = (isProduction) ? URI.create("https://anvian.net/telemetry/data") : URI.create("http://localhost:5000/telemetry/data");
@@ -62,6 +62,7 @@ public class TelemetryConfigManager extends Config {
                 jsonInput.addProperty("mod_id", modId);
                 jsonInput.addProperty("mod_version", modVersion);
                 jsonInput.addProperty("game_version", game_version);
+                jsonInput.addProperty("loader", loader);
                 request.addHeader("content-type", "application/json");
                 StringEntity params = new StringEntity(jsonInput.toString());
                 request.setEntity(params);
