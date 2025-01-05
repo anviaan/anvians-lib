@@ -5,13 +5,18 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import net.anvian.anvianslib.Constants;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.lang.reflect.Modifier;
-import java.net.HttpURLConnection;
 import java.net.URI;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 
 public class TelemetryConfigManager extends Config {
     private static final Gson GSON = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).setPrettyPrinting().excludeFieldsWithModifiers(Modifier.PRIVATE).create();
@@ -50,23 +55,18 @@ public class TelemetryConfigManager extends Config {
 
     public static void sendTelemetryData(String modId, String modVersion, String game_version, Boolean isProduction) {
         if (config.isEnableTelemetry()) {
-            try {
-                URL url = (isProduction) ? URI.create("https://anvian.net/telemetry/data").toURL() : URI.create("http://localhost:5000/telemetry/data").toURL();
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestMethod("POST");
-                connection.setRequestProperty("Content-Type", "application/json; utf-8");
-                connection.setDoOutput(true);
-
+            try (CloseableHttpClient client = HttpClientBuilder.create().build()) {
+                URI url = (isProduction) ? URI.create("https://anvian.net/telemetry/data") : URI.create("http://localhost:5000/telemetry/data");
+                HttpPost request = new HttpPost(url);
                 JsonObject jsonInput = new JsonObject();
                 jsonInput.addProperty("mod_id", modId);
                 jsonInput.addProperty("mod_version", modVersion);
                 jsonInput.addProperty("game_version", game_version);
-                String jsonInputString = jsonInput.toString();
-
-                try (OutputStream os = connection.getOutputStream()) {
-                    byte[] input = jsonInputString.getBytes(StandardCharsets.UTF_8);
-                    os.write(input, 0, input.length);
-                }
+                request.addHeader("content-type", "application/json");
+                StringEntity params = new StringEntity(jsonInput.toString());
+                request.setEntity(params);
+                HttpResponse response = client.execute(request);
+                System.out.println(response);
             } catch (IOException e) {
                 Constants.LOG.error("Failed to send telemetry data from {}", modId);
             }
