@@ -48,7 +48,9 @@ repositories {
 // Read more about capabilities here: https://docs.gradle.org/current/userguide/component_capabilities.html#sec:declaring-additional-capabilities-for-a-local-component
 ['apiElements', 'runtimeElements', 'sourcesElements', 'javadocElements'].each { variant ->
     configurations."$variant".outgoing {
+        capability("$group:${project.name}:$version")
         capability("$group:${base.archivesName.get()}:$version")
+        capability("$group:$mod_id-${project.name}-${minecraft_version}:$version")
         capability("$group:$mod_id:$version")
     }
     publishing.publications.configureEach {
@@ -112,6 +114,23 @@ publishing {
         register('mavenJava', MavenPublication) {
             artifactId base.archivesName.get()
             from components.java
+            pom {
+                name = "anvian's Lib"
+                description = "A small utility library for Anvian's mods."
+                url = 'https://github.com/anviaan/anvians-lib/'
+                licenses {
+                    license {
+                        name = 'GNU GPLv3'
+                        url = 'https://github.com/anviaan/anvians-lib/blob/main/LICENSE'
+                        distribution = 'repo'
+                    }
+                }
+                developers {
+                    developer {
+                        name = 'anvian'
+                    }
+                }
+            }
         }
     }
     repositories {
