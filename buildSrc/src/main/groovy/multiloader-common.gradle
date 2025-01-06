@@ -51,7 +51,6 @@ repositories {
         capability("$group:${project.name}:$version")
         capability("$group:${base.archivesName.get()}:$version")
         capability("$group:$mod_id-${project.name}-${minecraft_version}:$version")
-        capability("$group:$mod_id-$variant-$minecraft_version:$version")
         capability("$group:$mod_id:$version")
     }
     publishing.publications.configureEach {
