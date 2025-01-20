@@ -1,12 +1,16 @@
 plugins {
     id 'multiloader-loader'
-    id 'fabric-loom' version '1.6-SNAPSHOT'
+    id 'fabric-loom' version '1.9-SNAPSHOT'
 }
 
 repositories {
     maven {
         name = "Mod Menu"
         url = "https://maven.terraformersmc.com/"
+    }
+    maven {
+        name = "Nucleoid"
+        url = "https://maven.nucleoid.xyz/"
     }
 }
 
@@ -16,11 +20,11 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
 
-    modLocalRuntime("com.terraformersmc:modmenu:10.0.0")
+    modLocalRuntime("com.terraformersmc:modmenu:9.2.0")
 }
 
 loom {
-    def aw = project(':common').file("src/main/resources/${mod_id}.accesswidener")
+    def aw = project(":common").file("src/main/resources/${mod_id}.accesswidener")
     if (aw.exists()) {
         accessWidenerPath.set(aw)
     }
@@ -30,15 +34,15 @@ loom {
     runs {
         client {
             client()
-            setConfigName('Fabric Client')
+            setConfigName("Fabric Client")
             ideConfigGenerated(true)
-            runDir('runs/client')
+            runDir("runs/client")
         }
         server {
             server()
-            setConfigName('Fabric Server')
+            setConfigName("Fabric Server")
             ideConfigGenerated(true)
-            runDir('runs/server')
+            runDir("runs/server")
         }
     }
 }
