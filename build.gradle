@@ -96,6 +96,7 @@ publishing {
     publications {
         register('mavenJava', MavenPublication) {
             from components.java
+            artifactId = "anvianslib-neoforge-1.20.4"
             pom {
                 name = "anvian's Lib"
                 description = "A small utility library for Anvian's mods."
