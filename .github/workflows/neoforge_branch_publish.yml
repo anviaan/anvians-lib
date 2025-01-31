@@ -37,7 +37,7 @@ jobs:
       - name: Build
         run: ./gradlew build
 
-      - name: NeoForge Publish (Modrinth & CurseForge)
+      - name: NeoForge Branch Publish (Modrinth & CurseForge)
         uses: Kir-Antipov/mc-publish@v3.3
         with:
           modrinth-id: ${{ env.MODRINTH_ID }}
