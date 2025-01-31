@@ -1,4 +1,4 @@
-name: NeoForgePublish
+name: NeoForgeBranchPublish
 
 on: [ workflow_dispatch ]
 
