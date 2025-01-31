@@ -131,9 +131,11 @@ publishing {
 tasks.register("printEnv") {
     doLast {
         def envFile = new File(System.getenv("GITHUB_ENV"))
-        envFile.append("MOD_VERSION=${properties.mod_version}\n")
-        envFile.append("RELEASE_NAME=${properties.mod_name}-${properties.mod_version}\n")
-        envFile.append("GAME_VERSIONS=${properties.minecraft_version_range}\n")
+        envFile.withWriterAppend { writer ->
+            writer.append("MOD_VERSION=${project.properties.mod_version}\n")
+            writer.append("RELEASE_NAME=${project.properties.mod_name}-${project.properties.mod_version}\n")
+            writer.append("GAME_VERSIONS=${project.properties.minecraft_version_range}\n")
+        }
     }
 }
 
