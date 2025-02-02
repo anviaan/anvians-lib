@@ -1,15 +1,11 @@
 {
   "required": true,
-  "minVersion": "0.8",
   "package": "net.anvian.anvianslib.mixin",
-  "refmap": "${mod_id}.refmap.json",
   "compatibilityLevel": "JAVA_17",
+  "minVersion": "0.8",
+  "client": [],
   "mixins": [],
-  "client": [
-  ],
-  "server": [],
   "injectors": {
     "defaultRequire": 1
   }
 }
-

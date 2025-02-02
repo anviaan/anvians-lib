@@ -1,28 +1,30 @@
 modLoader = "javafml"
-loaderVersion = "${forge_loader_version_range}"
-license = "${license}"
+loaderVersion = "[41,)"
+license = "GPL-3.0"
 issueTrackerURL = "https://github.com/anviaan/anvians-lib/issues"
 
 [[mods]]
-modId = "${mod_id}"
+modId = "anvianslib"
 version = "${version}"
-displayName = "${mod_name}"
+displayName = "Anvian's Lib"
 updateJSONURL = "https://api.modrinth.com/updates/PuTjrq4T/forge_updates.json"
 displayURL = "https://modrinth.com/mod/anvians-lib"
-logoFile = "${mod_id}.png"
-authors = "${mod_author}"
-description = '''${description}'''
+authors = "anvian"
+description = '''
+A small utility library for Anvian's mods.
+'''
+logoFile = "anvianslib.png"
 
-[[dependencies.${ mod_id }]]
+[[dependencies.anvianslib]]
 modId = "forge"
 mandatory = true
-versionRange = "[46.0.14,)"
+versionRange = "[41,)"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.${ mod_id }]]
+[[dependencies.anvianslib]]
 modId = "minecraft"
 mandatory = true
-versionRange = "${minecraft_version_range}"
+versionRange = "[1.19,)"
 ordering = "NONE"
 side = "BOTH"

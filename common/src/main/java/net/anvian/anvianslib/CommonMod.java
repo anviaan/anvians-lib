@@ -1,6 +1,6 @@
 package net.anvian.anvianslib;
 
-public class CommonMod {
+public final class CommonMod {
     public static void init() {
 
     }
