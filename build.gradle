@@ -17,7 +17,7 @@ tasks.register("printEnv") {
     doLast {
         def envFile = new File(System.getenv("GITHUB_ENV"))
         envFile.append("MOD_VERSION=$rootProject.mod_version\n")
-        envFile.append("RELEASE_NAME=$rootProject.mod_id-$rootProject.mod_version\n")
+        envFile.append("RELEASE_NAME=$rootProject.archives_name-$rootProject.mod_version\n")
         envFile.append("GAME_VERSIONS=$rootProject.minecraft_version_range\n")
     }
 }
