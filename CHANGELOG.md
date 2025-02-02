@@ -1,1 +1,1 @@
-- Base mod
+- Fixing ClassNotFoundException: org.apache.http.HttpEntity on servers
