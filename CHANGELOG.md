@@ -1,1 +1,3 @@
-- Fixing ClassNotFoundException: org.apache.http.HttpEntity on servers
+- Refactor configuration handling and telemetry setup
+- Library badged added in Fabric with ModMenu
+- Platform helpers for Fabric and Forge added

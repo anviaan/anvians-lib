@@ -17,7 +17,10 @@
       "links": {
         "modmenu.curseforge": "https://www.curseforge.com/minecraft/mc-mods/anvians-lib",
         "modmenu.modrinth": "https://modrinth.com/mod/anvians-lib"
-      }
+      },
+      "badges": [
+        "library"
+      ]
     }
   },
   "license": "GPL-3.0",
