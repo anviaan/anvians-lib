@@ -1,5 +1,7 @@
 package net.anvian.anvianslib.platform.services;
 
+import java.nio.file.Path;
+
 public interface IPlatformHelper {
 
     /**
@@ -32,4 +34,11 @@ public interface IPlatformHelper {
     default String getEnvironmentName() {
         return isDevelopmentEnvironment() ? "development" : "production";
     }
+
+    /**
+     * Gets the path to the config directory for the mod.
+     *
+     * @return The path to the config directory.
+     */
+    Path getConfigPath();
 }

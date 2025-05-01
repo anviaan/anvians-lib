@@ -3,6 +3,9 @@ package net.anvian.anvianslib.platform;
 import net.anvian.anvianslib.platform.services.IPlatformHelper;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.loading.FMLLoader;
+import net.neoforged.fml.loading.FMLPaths;
+
+import java.nio.file.Path;
 
 public class NeoForgePlatformHelper implements IPlatformHelper {
 
@@ -19,5 +22,10 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
     @Override
     public boolean isDevelopmentEnvironment() {
         return !FMLLoader.isProduction();
+    }
+
+    @Override
+    public Path getConfigPath() {
+        return FMLPaths.CONFIGDIR.get();
     }
 }
