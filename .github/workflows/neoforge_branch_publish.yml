@@ -60,3 +60,6 @@ jobs:
             neoforge
 
           java: ${{ env.JAVA_VERSION }}
+
+      - name: Publish to Repsy
+        run: ./gradlew publish
