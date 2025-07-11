@@ -32,7 +32,7 @@ public class LibUtil {
      * @return The current Minecraft version as a string
      */
     public static String getMinecraftVersion() {
-        return SharedConstants.getCurrentVersion().getName();
+        return SharedConstants.getCurrentVersion().name();
     }
 
     /**
