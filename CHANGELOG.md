@@ -1,2 +1,1 @@
-- Refactor configuration handling and telemetry setup
-- Library badged added in Fabric with ModMenu
+- Port to 1.21.9/10

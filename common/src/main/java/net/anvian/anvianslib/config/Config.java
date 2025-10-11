@@ -19,7 +19,7 @@ public abstract class Config {
      * @throws UnsupportedOperationException if the method is not implemented
      */
     public static void loadConfig() {
-        throw new UnsupportedOperationException("loadConfig no está implementado");
+        throw new UnsupportedOperationException("loadConfig is not implemented");
     }
 
     /**
@@ -29,6 +29,6 @@ public abstract class Config {
      * @throws UnsupportedOperationException if the method is not implemented
      */
     public static void saveConfig() {
-        throw new UnsupportedOperationException("saveConfig no está implementado");
+        throw new UnsupportedOperationException("saveConfig is not implemented");
     }
 }
