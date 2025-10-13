@@ -70,7 +70,7 @@ public class LibUtil {
             }
         }
 
-        TelemetryConfigManager.getInstance().initialize(modConfigDir.toFile(), modId);
+        TelemetryConfigManager.getInstance().initialize(modConfigDir.toFile());
         TelemetryConfigManager.getInstance().sendTelemetryData(modId, modVersion);
     }
 }
