@@ -74,8 +74,8 @@ public class TelemetryConfigManager extends Config<TelemetryConfigManager.Teleme
     /**
      * Inicializa la configuración de telemetría para el mod indicado.
      */
-    public void initialize(File configDir, String modId) {
-        super.initialize(configDir, modId);
+    public void initialize(File configDir) {
+        super.initialize(configDir, "telemetry");
     }
 
     /**
