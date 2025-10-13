@@ -1,170 +1,99 @@
 package net.anvian.anvianslib.config;
 
-import com.google.gson.FieldNamingPolicy;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
 import net.anvian.anvianslib.Constants;
 import net.anvian.anvianslib.platform.Services;
+import net.anvian.anvianslib.telemetry.TelemetrySender;
 import net.anvian.anvianslib.util.LibUtil;
 
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.lang.reflect.Modifier;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
+import java.util.Optional;
 
 /**
- * Manages telemetry configuration and data sending for mods.
- * Handles loading, saving, and managing telemetry settings through a JSON configuration file.
+ * Gestiona la configuración y el envío de telemetría para mods.
+ * Carga, guarda y administra la configuración de telemetría mediante un archivo JSON.
+ * Implementa singleton thread-safe y delega el envío a TelemetrySender.
  */
-public class TelemetryConfigManager extends Config {
-    /** GSON instance configured for telemetry config serialization/deserialization */
-    private static final Gson GSON = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).setPrettyPrinting().excludeFieldsWithModifiers(Modifier.PRIVATE).create();
-    /** Current telemetry configuration instance */
-    private static TelemetryConfig config;
+public class TelemetryConfigManager extends Config<TelemetryConfigManager.TelemetryConfig> {
 
-    /**
-     * Initializes the telemetry configuration system.
-     * @param configDir Directory where the telemetry configuration file should be stored
-     */
-    public static void initialize(File configDir) {
-        configFile = new File(configDir, "telemetry.json");
-        loadConfig();
+    private static final TelemetryConfigManager INSTANCE = new TelemetryConfigManager();
+    private final TelemetrySender telemetrySender = new TelemetrySender();
+
+    private TelemetryConfigManager() {
+        super(TelemetryConfig.class, Constants.LOG);
+    }
+
+    public static TelemetryConfigManager getInstance() {
+        return INSTANCE;
+    }
+
+    @Override
+    protected TelemetryConfig createDefaultConfig() {
+        return new TelemetryConfig();
     }
 
     /**
-     * Loads the telemetry configuration from file.
-     * Creates a new configuration with default values if the file doesn't exist.
+     * Devuelve la configuración de telemetría como Optional.
      */
-    public static void loadConfig() {
-        if (!configFile.exists()) {
-            config = new TelemetryConfig();
-            saveConfig();
-        } else {
-            try (FileReader reader = new FileReader(configFile)) {
-                config = GSON.fromJson(reader, TelemetryConfig.class);
-            } catch (IOException e) {
-                Constants.LOG.error("Failed to load config");
-                config = new TelemetryConfig();
-            }
-        }
+    public Optional<TelemetryConfig> getTelemetryConfig() {
+        return Optional.ofNullable(config);
     }
 
     /**
-     * Saves the current telemetry configuration to file.
+     * Envía datos de telemetría con información de mod y versión de juego.
      */
-    public static void saveConfig() {
-        try (FileWriter writer = new FileWriter(configFile)) {
-            GSON.toJson(config, writer);
-        } catch (IOException e) {
-            Constants.LOG.error("Failed to save config");
-        }
+    public void sendTelemetryData(String modId, String modVersion, String gameVersion) {
+        getTelemetryConfig().filter(TelemetryConfig::isEnableTelemetry).ifPresent(cfg ->
+            telemetrySender.send(
+                modId,
+                modVersion,
+                gameVersion,
+                Services.PLATFORM.getPlatformName(),
+                !Services.PLATFORM.isDevelopmentEnvironment()
+            )
+        );
     }
 
     /**
-     * Retrieves the current telemetry configuration.
-     * @return The current TelemetryConfig instance
+     * Envía datos de telemetría con información de mod y versión de juego autodetectada.
      */
-    public static TelemetryConfig getConfig() {
-        return config;
+    public void sendTelemetryData(String modId, String modVersion) {
+        sendTelemetryData(modId, modVersion, LibUtil.getMinecraftVersion());
     }
 
     /**
-     * Sends telemetry data with specified mod information and game version.
-     * @param modId The ID of the mod
-     * @param modVersion The version of the mod
-     * @param game_version The Minecraft game version
-     */
-    public static void sendTelemetryData(String modId, String modVersion, String game_version) {
-        if (config != null && config.isEnableTelemetry()) {
-            sendTelemetryData(
-                    modId,
-                    modVersion,
-                    game_version,
-                    Services.PLATFORM.getPlatformName(),
-                    !Services.PLATFORM.isDevelopmentEnvironment()
-            );
-        }
-    }
-
-    /**
-     * Sends telemetry data with specified mod information and auto-detected game version.
-     * @param modId The ID of the mod
-     * @param modVersion The version of the mod
-     */
-    public static void sendTelemetryData(String modId, String modVersion) {
-        if (config != null && config.isEnableTelemetry()) {
-            sendTelemetryData(
-                    modId,
-                    modVersion,
-                    LibUtil.getMinecraftVersion(),
-                    Services.PLATFORM.getPlatformName(),
-                    !Services.PLATFORM.isDevelopmentEnvironment()
-            );
-        }
-    }
-
-    /**
-     * Sends detailed telemetry data to the configured endpoint.
-     * @param modId The ID of the mod
-     * @param modVersion The version of the mod
-     * @param game_version The Minecraft game version
-     * @param loader The mod loader being used
-     * @param isProduction Whether the mod is running in a production environment
-     *
-     * @deprecated This method is deprecated and should not be used directly.
-     * Use {@link #sendTelemetryData(String, String)} instead.
+     * Método legado para enviar datos detallados de telemetría.
+     * @deprecated Usar {@link #sendTelemetryData(String, String)}
      */
     @Deprecated
-    public static void sendTelemetryData(String modId, String modVersion, String game_version, String loader, Boolean isProduction) {
-        if (config != null && config.isEnableTelemetry()) {
-            try (HttpClient client = HttpClient.newHttpClient()) {
-                URI url = (isProduction) ? URI.create("https://anvian.net/telemetry/data") : URI.create("http://localhost:8082/telemetry/data");
-
-                JsonObject jsonInput = new JsonObject();
-                jsonInput.addProperty("mod_id", modId);
-                jsonInput.addProperty("mod_version", modVersion);
-                jsonInput.addProperty("game_version", game_version);
-                jsonInput.addProperty("loader", loader);
-
-                HttpRequest request = HttpRequest.newBuilder()
-                        .uri(url)
-                        .header("content-type", "application/json")
-                        .POST(HttpRequest.BodyPublishers.ofString(jsonInput.toString()))
-                        .build();
-
-                HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-                Constants.LOG.info("Telemetry data sent: {}", response.statusCode());
-            } catch (IOException | InterruptedException ignored) {
-                Constants.LOG.error("Failed to send telemetry data from {}", modId);
-            }
-        }
+    public void sendTelemetryDataLegacy(String modId, String modVersion, String gameVersion, String loader, boolean isProduction) {
+        getTelemetryConfig().filter(TelemetryConfig::isEnableTelemetry).ifPresent(cfg ->
+            telemetrySender.send(modId, modVersion, gameVersion, loader, isProduction)
+        );
     }
 
     /**
-     * Configuration class for telemetry settings.
+     * Inicializa la configuración de telemetría para el mod indicado.
+     */
+    public void initialize(File configDir, String modId) {
+        super.initialize(configDir, modId);
+    }
+
+    /**
+     * Clase de configuración para telemetría.
      */
     public static class TelemetryConfig {
-        /** Flag to enable/disable telemetry data collection */
+        /** Flag para habilitar/deshabilitar la telemetría */
         public boolean enableTelemetry;
 
         /**
-         * Creates a new telemetry configuration with default settings.
-         * Telemetry is enabled by default.
+         * Crea una configuración de telemetría con valores por defecto (habilitado).
          */
         public TelemetryConfig() {
             enableTelemetry = true;
         }
 
         /**
-         * Checks if telemetry is enabled.
-         * @return true if telemetry is enabled, false otherwise
+         * Indica si la telemetría está habilitada.
          */
         public boolean isEnableTelemetry() {
             return enableTelemetry;
