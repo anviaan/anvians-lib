@@ -155,3 +155,13 @@ idea {
         downloadJavadoc = true
     }
 }
+
+//Solve the issue with lwjgl-freetype on macOS
+subprojects {
+    repositories {
+        maven {
+            url "https://libraries.minecraft.net"
+            content { includeModule("org.lwjgl", "lwjgl-freetype") }
+        }
+    }
+}

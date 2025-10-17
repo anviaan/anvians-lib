@@ -1,1 +1,1 @@
-- Port to Neoforge 1.20.6
+- Refactor Config class to improve reusability and maintainability
