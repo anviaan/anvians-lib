@@ -1,3 +1,1 @@
-- Refactor configuration handling and telemetry setup
-- Library badged added in Fabric with ModMenu
-- Platform helpers for Fabric and Forge added
+- Refactor Config class to improve reusability and maintainability
