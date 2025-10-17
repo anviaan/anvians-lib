@@ -9,12 +9,12 @@ import java.io.File;
 import java.util.Optional;
 
 /**
- * Gestiona la configuración y el envío de telemetría para mods.
- * Carga, guarda y administra la configuración de telemetría mediante un archivo JSON.
- * Implementa singleton thread-safe y delega el envío a TelemetrySender.
+ * Manager for telemetry configuration and sending telemetry data.
+ *
+ * <p>This class is a singleton that holds a {@link TelemetryConfig} instance loaded from a
+ * JSON file. It provides convenience methods to send telemetry data when telemetry is enabled.
  */
 public class TelemetryConfigManager extends Config<TelemetryConfigManager.TelemetryConfig> {
-
     private static final TelemetryConfigManager INSTANCE = new TelemetryConfigManager();
     private final TelemetrySender telemetrySender = new TelemetrySender();
 
@@ -22,6 +22,11 @@ public class TelemetryConfigManager extends Config<TelemetryConfigManager.Teleme
         super(TelemetryConfig.class, Constants.LOG);
     }
 
+    /**
+     * Returns the singleton instance of the manager.
+     *
+     * @return the TelemetryConfigManager singleton
+     */
     public static TelemetryConfigManager getInstance() {
         return INSTANCE;
     }
@@ -32,68 +37,80 @@ public class TelemetryConfigManager extends Config<TelemetryConfigManager.Teleme
     }
 
     /**
-     * Devuelve la configuración de telemetría como Optional.
+     * Returns the loaded telemetry configuration wrapped in an Optional.
+     *
+     * @return Optional containing the TelemetryConfig if present
      */
     public Optional<TelemetryConfig> getTelemetryConfig() {
         return Optional.ofNullable(config);
     }
 
     /**
-     * Envía datos de telemetría con información de mod y versión de juego.
+     * Send telemetry data for a mod if telemetry is enabled in the config.
+     *
+     * @param modId       the mod identifier
+     * @param modVersion  the mod version string
+     * @param gameVersion the game (Minecraft) version string
      */
     public void sendTelemetryData(String modId, String modVersion, String gameVersion) {
         getTelemetryConfig().filter(TelemetryConfig::isEnableTelemetry).ifPresent(cfg ->
-            telemetrySender.send(
-                modId,
-                modVersion,
-                gameVersion,
-                Services.PLATFORM.getPlatformName(),
-                !Services.PLATFORM.isDevelopmentEnvironment()
-            )
+                telemetrySender.send(
+                        modId,
+                        modVersion,
+                        gameVersion,
+                        Services.PLATFORM.getPlatformName(),
+                        !Services.PLATFORM.isDevelopmentEnvironment()
+                )
         );
     }
 
     /**
-     * Envía datos de telemetría con información de mod y versión de juego autodetectada.
+     * Convenience overload that uses the current Minecraft version as the game version.
+     *
+     * @param modId      the mod identifier
+     * @param modVersion the mod version string
      */
     public void sendTelemetryData(String modId, String modVersion) {
         sendTelemetryData(modId, modVersion, LibUtil.getMinecraftVersion());
     }
 
     /**
-     * Método legado para enviar datos detallados de telemetría.
-     * @deprecated Usar {@link #sendTelemetryData(String, String)}
+     * Legacy method kept for backwards compatibility. Sends telemetry unconditionally using
+     * the provided loader and production flag, but will still respect the user's telemetry opt-out.
+     *
+     * @deprecated use {@link #sendTelemetryData(String, String, String)} instead
      */
     @Deprecated
     public void sendTelemetryDataLegacy(String modId, String modVersion, String gameVersion, String loader, boolean isProduction) {
         getTelemetryConfig().filter(TelemetryConfig::isEnableTelemetry).ifPresent(cfg ->
-            telemetrySender.send(modId, modVersion, gameVersion, loader, isProduction)
+                telemetrySender.send(modId, modVersion, gameVersion, loader, isProduction)
         );
     }
 
     /**
-     * Inicializa la configuración de telemetría para el mod indicado.
+     * Initialize the telemetry config manager using the provided config directory. The config
+     * filename will be derived from the fixed id "telemetry".
+     *
+     * @param configDir the directory where the telemetry config file will be stored
      */
     public void initialize(File configDir) {
         super.initialize(configDir, "telemetry");
     }
 
     /**
-     * Clase de configuración para telemetría.
+     * Simple POJO representing the telemetry configuration options serialized to JSON.
      */
     public static class TelemetryConfig {
-        /** Flag para habilitar/deshabilitar la telemetría */
         public boolean enableTelemetry;
 
-        /**
-         * Crea una configuración de telemetría con valores por defecto (habilitado).
-         */
         public TelemetryConfig() {
             enableTelemetry = true;
         }
 
         /**
-         * Indica si la telemetría está habilitada.
+         * Returns whether telemetry is enabled. If false, telemetry will not be sent.
+         *
+         * @return true when telemetry is enabled
          */
         public boolean isEnableTelemetry() {
             return enableTelemetry;

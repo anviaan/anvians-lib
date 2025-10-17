@@ -1,1 +1,1 @@
-- Small Fix
+- Refactor Config class to improve reusability and maintainability
