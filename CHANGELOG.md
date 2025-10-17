@@ -1,2 +1,1 @@
-- Refactor configuration handling and telemetry setup
-- Library badged added in Fabric with ModMenu
+- Refactor Config class to improve reusability and maintainability
