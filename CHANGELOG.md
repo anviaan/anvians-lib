@@ -1,1 +1,1 @@
-- Refactor Config class to improve reusability and maintainability
+- Fixing minecraft version range
