@@ -64,6 +64,15 @@ public abstract class Config<T> {
      */
     public void initialize(File configDir, String modId) {
         this.modId = modId;
+
+        try {
+            if (!configDir.exists()) {
+                configDir.mkdirs();
+            }
+        } catch (SecurityException e) {
+            logger.error("Failed to create config directory: {}", configDir.getAbsolutePath(), e);
+        }
+
         configFile = new File(configDir, modId + "-config.json");
         loadConfig();
     }

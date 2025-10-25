@@ -1,1 +1,1 @@
-- Refactor Config class to improve reusability and maintainability
+- Ensure config directory exists before writing config file
