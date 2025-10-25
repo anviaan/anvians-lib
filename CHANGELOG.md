@@ -1,1 +1,1 @@
-- Refactor Config class to improve reusability and maintainability
+- Add config directory creation logic in Config.java
