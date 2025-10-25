@@ -1,1 +1,1 @@
-- Fixing minecraft version range
+- Add config directory creation logic in Config.java
