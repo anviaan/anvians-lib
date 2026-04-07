@@ -1,6 +1,6 @@
 plugins {
-    id 'fabric-loom' version '1.11-SNAPSHOT' apply false
-    id 'net.neoforged.moddev' version '2.0.115' apply false
+    id 'fabric-loom' version '1.15.5' apply false
+    id 'net.neoforged.moddev' version '2.0.139' apply false
 }
 
 tasks.register("printEnv") {
@@ -9,15 +9,5 @@ tasks.register("printEnv") {
         envFile.append("MOD_VERSION=${version}\n")
         envFile.append("RELEASE_NAME=${mod_id}-${version}\n")
         envFile.append("GAME_VERSIONS=${minecraft_version_range}\n")
-    }
-}
-
-//Solve the issue with lwjgl-freetype on macOS
-subprojects {
-    repositories {
-        maven {
-            url "https://libraries.minecraft.net"
-            content { includeModule("org.lwjgl", "lwjgl-freetype") }
-        }
     }
 }

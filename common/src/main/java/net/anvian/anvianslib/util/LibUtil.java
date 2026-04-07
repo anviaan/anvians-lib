@@ -13,20 +13,6 @@ import java.nio.file.Path;
  */
 public class LibUtil {
     /**
-     * Converts game ticks to seconds.
-     *
-     * @param cooldown The number of ticks to convert
-     * @return The equivalent time in seconds as a float
-     *
-     * @deprecated This method is deprecated because it uses a fixed conversion rate.
-     * Use {@link TimeUtil#ticksToSeconds(int)} instead.
-     */
-    @Deprecated(forRemoval = true, since = "1.2")
-    public static float ticksToSeconds(int cooldown) {
-        return (float) cooldown / 20;
-    }
-
-    /**
      * Gets the current Minecraft version name.
      *
      * @return The current Minecraft version as a string
@@ -38,7 +24,7 @@ public class LibUtil {
     /**
      * Creates a config directory for the specified mod if it doesn't exist.
      *
-     * @param modId The ID of the mod
+     * @param modId      The ID of the mod
      * @param configPath The base config path to create the mod directory in
      * @throws RuntimeException if directory creation fails
      */
@@ -56,7 +42,7 @@ public class LibUtil {
     /**
      * Sets up telemetry for a mod by creating its config directory and initializing telemetry data.
      *
-     * @param modId The ID of the mod
+     * @param modId      The ID of the mod
      * @param modVersion The version of the mod
      * @throws RuntimeException if directory creation fails
      */
