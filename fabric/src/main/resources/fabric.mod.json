@@ -38,11 +38,10 @@
   "depends": {
     "fabricloader": ">=${fabric_loader_version}",
     "fabric-api": "*",
-    "minecraft": ">=1.21.9",
+    "minecraft": ">=${minecraft_version}",
     "java": ">=${java_version}"
   },
   "suggests": {
     "another-mod": "*"
   }
 }
-  

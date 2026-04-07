@@ -22,39 +22,57 @@ public class LibUtil {
     }
 
     /**
-     * Creates a config directory for the specified mod if it doesn't exist.
+     * Creates a directory if it doesn't exist.
      *
-     * @param modId      The ID of the mod
-     * @param configPath The base config path to create the mod directory in
+     * @param dirPath The path to create
      * @throws RuntimeException if directory creation fails
      */
-    public static void generateConfigPath(String modId, Path configPath) {
-        Path configDir = configPath.resolve(modId);
-        if (Files.notExists(configDir)) {
+    private static void createDirectoryIfNotExists(Path dirPath) {
+        if (Files.notExists(dirPath)) {
             try {
-                Files.createDirectories(configDir);
+                Files.createDirectories(dirPath);
             } catch (IOException e) {
-                throw new RuntimeException("Failed to create config directory: " + configDir, e);
+                throw new RuntimeException("Failed to create directory: " + dirPath, e);
             }
         }
     }
 
     /**
+     * Creates a config directory for the specified mod if it doesn't exist.
+     *
+     * @param modId      The ID of the mod (must not be null)
+     * @param configPath The base config path to create the mod directory in (must not be null)
+     * @throws NullPointerException if modId or configPath is null
+     * @throws RuntimeException if directory creation fails
+     */
+    public static void generateConfigPath(String modId, Path configPath) {
+        if (modId == null) {
+            throw new NullPointerException("modId must not be null");
+        }
+        if (configPath == null) {
+            throw new NullPointerException("configPath must not be null");
+        }
+        Path configDir = configPath.resolve(modId);
+        createDirectoryIfNotExists(configDir);
+    }
+
+    /**
      * Sets up telemetry for a mod by creating its config directory and initializing telemetry data.
      *
-     * @param modId      The ID of the mod
-     * @param modVersion The version of the mod
+     * @param modId      The ID of the mod (must not be null)
+     * @param modVersion The version of the mod (must not be null)
+     * @throws NullPointerException if modId or modVersion is null
      * @throws RuntimeException if directory creation fails
      */
     public static void setupTelemetry(String modId, String modVersion) {
-        Path modConfigDir = Services.PLATFORM.getConfigPath().resolve(modId);
-        if (Files.notExists(modConfigDir)) {
-            try {
-                Files.createDirectories(modConfigDir);
-            } catch (IOException e) {
-                throw new RuntimeException("Failed to create config directory: " + modConfigDir, e);
-            }
+        if (modId == null) {
+            throw new NullPointerException("modId must not be null");
         }
+        if (modVersion == null) {
+            throw new NullPointerException("modVersion must not be null");
+        }
+        Path modConfigDir = Services.PLATFORM.getConfigPath().resolve(modId);
+        createDirectoryIfNotExists(modConfigDir);
 
         TelemetryConfigManager.getInstance().initialize(modConfigDir.toFile());
         TelemetryConfigManager.getInstance().sendTelemetryData(modId, modVersion);
