@@ -16,7 +16,6 @@ import java.util.Optional;
  */
 public class TelemetryConfigManager extends Config<TelemetryConfigManager.TelemetryConfig> {
     private static final TelemetryConfigManager INSTANCE = new TelemetryConfigManager();
-    private final TelemetrySender telemetrySender = new TelemetrySender();
 
     private TelemetryConfigManager() {
         super(TelemetryConfig.class, Constants.LOG);
@@ -54,7 +53,7 @@ public class TelemetryConfigManager extends Config<TelemetryConfigManager.Teleme
      */
     public void sendTelemetryData(String modId, String modVersion, String gameVersion) {
         getTelemetryConfig().filter(TelemetryConfig::isEnableTelemetry).ifPresent(cfg ->
-                telemetrySender.send(
+                TelemetrySender.send(
                         modId,
                         modVersion,
                         gameVersion,
@@ -72,19 +71,6 @@ public class TelemetryConfigManager extends Config<TelemetryConfigManager.Teleme
      */
     public void sendTelemetryData(String modId, String modVersion) {
         sendTelemetryData(modId, modVersion, LibUtil.getMinecraftVersion());
-    }
-
-    /**
-     * Legacy method kept for backwards compatibility. Sends telemetry unconditionally using
-     * the provided loader and production flag, but will still respect the user's telemetry opt-out.
-     *
-     * @deprecated use {@link #sendTelemetryData(String, String, String)} instead
-     */
-    @Deprecated
-    public void sendTelemetryDataLegacy(String modId, String modVersion, String gameVersion, String loader, boolean isProduction) {
-        getTelemetryConfig().filter(TelemetryConfig::isEnableTelemetry).ifPresent(cfg ->
-                telemetrySender.send(modId, modVersion, gameVersion, loader, isProduction)
-        );
     }
 
     /**
