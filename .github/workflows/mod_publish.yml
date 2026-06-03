@@ -1,4 +1,4 @@
-name: Fabric and NeoForge Publish
+name: Mod Publish
 
 on: [ workflow_dispatch ]
 
@@ -88,6 +88,23 @@ jobs:
           loaders: |
             forge
 
+          java: ${{ env.JAVA_VERSION }}
+
+      - name: NeoForge Publish (Modrinth & CurseForge)
+        uses: Kir-Antipov/mc-publish@v3.3
+        with:
+          modrinth-id: ${{ env.MODRINTH_ID }}
+          modrinth-token: ${{ env.MODRINTH_TOKEN }}
+          curseforge-id: ${{ env.CURSEFORGE_ID }}
+          curseforge-token: ${{ env.CURSEFORGE_TOKEN }}
+          files: |
+            neoforge/build/libs/!(*-@(dev|sources|javadoc|shadow)).jar
+          name: ${{ env.RELEASE_NAME }}
+          version: ${{ env.MOD_VERSION }}
+          version-type: 'release'
+          changelog-file: CHANGELOG.md
+          game-versions: ${{ env.NEOFORGE_GAME_VERSIONS }}
+          loaders: neoforge
           java: ${{ env.JAVA_VERSION }}
 
       - name: Publish to Repsy

@@ -2,7 +2,7 @@ plugins {
     id 'idea'
     id 'java-library'
     id 'maven-publish'
-    id 'org.spongepowered.gradle.vanilla'
+    id 'org.spongepowered.gradle.vanilla' version '0.2.1-SNAPSHOT'
 }
 base {
     archivesName = "${mod_id}-common-1.20"
@@ -21,7 +21,7 @@ dependencies {
 
 publishing {
     publications {
-        register('mavenJava', MavenPublication) {
+        mavenJava(MavenPublication) {
             artifactId base.archivesName.get()
             from components.java
             pom {
@@ -45,11 +45,13 @@ publishing {
     }
     repositories {
         maven {
-            name = "Repsy"
-            url = uri("https://repo.repsy.io/mvn/anvian/anvians-lib")
+            name = "Reposilite"
+            url = uri(version.toString().endsWith("SNAPSHOT") ?
+                    "https://maven.anvian.net/snapshots" :
+                    "https://maven.anvian.net/releases")
             credentials {
-                username = "anvian"
-                password = project.findProperty("gpr.token") ?: System.getenv("REPSY_TOKEN")
+                username = (project.findProperty("reposilite.user") as String) ?: System.getenv("REPOSILITE_USER")
+                password = (project.findProperty("reposilite.token") as String) ?: System.getenv("REPOSILITE_TOKEN")
             }
         }
     }

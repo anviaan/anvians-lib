@@ -1,8 +1,5 @@
 plugins {
-    id 'fabric-loom' version '1.6-SNAPSHOT' apply(false)
-    id 'net.minecraftforge.gradle' version '[6.0,6.2)' apply(false)
-    id 'org.spongepowered.gradle.vanilla' version '0.2.1-SNAPSHOT' apply(false)
-    id("org.spongepowered.mixin") version "0.7-SNAPSHOT" apply(false)
+    id "org.jetbrains.gradle.plugin.idea-ext" version "1.1.7"
 }
 
 tasks.register("printEnv") {
@@ -11,6 +8,7 @@ tasks.register("printEnv") {
         envFile.append("MOD_VERSION=${version}\n")
         envFile.append("RELEASE_NAME=${mod_name}-${version}\n")
         envFile.append("GAME_VERSIONS=${minecraft_version_range}\n")
+        envFile.append("NEOFORGE_GAME_VERSIONS=${neoforge_minecraft_version_range}\n")
     }
 }
 
@@ -67,25 +65,34 @@ subprojects {
 
     processResources {
         def expandProps = [
-                "version"                   : version,
-                "group"                     : project.group, //Else we target the task's group.
-                "minecraft_version"         : minecraft_version,
-                "forge_version"             : forge_version,
-                "forge_loader_version_range": forge_loader_version_range,
-                "forge_version_range"       : forge_version_range,
-                "minecraft_version_range"   : minecraft_version_range,
-                "fabric_version"            : fabric_version,
-                "fabric_loader_version"     : fabric_loader_version,
-                "mod_name"                  : mod_name,
-                "mod_author"                : mod_author,
-                "mod_id"                    : mod_id,
-                "license"                   : license,
-                "description"               : project.description
+                "version"                      : version,
+                "group"                        : project.group, //Else we target the task's group.
+                "minecraft_version"            : minecraft_version,
+                "forge_version"                : forge_version,
+                "forge_loader_version_range"   : forge_loader_version_range,
+                "forge_version_range"          : forge_version_range,
+                "minecraft_version_range"      : minecraft_version_range,
+                "fabric_version"               : fabric_version,
+                "fabric_loader_version"        : fabric_loader_version,
+                "mod_name"                     : mod_name,
+                "mod_author"                   : mod_author,
+                "mod_id"                       : mod_id,
+                "license"                      : license,
+                "description"                  : project.description,
+                "neoforge_version"             : neoforge_version,
+                "neoforge_loader_version_range": neoforge_loader_version_range,
+                "neoforge_version_range"       : neoforge_version_range,
+                "neoforge_minecraft_version_range": neoforge_minecraft_version_range,
+                "credits"                      : credits
         ]
 
         filesMatching(['pack.mcmeta', 'fabric.mod.json', 'META-INF/mods.toml', '*.mixins.json']) {
             expand expandProps
         }
         inputs.properties(expandProps)
+    }
+
+    tasks.withType(GenerateModuleMetadata).configureEach {
+        enabled = false
     }
 }
