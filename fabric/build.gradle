@@ -21,8 +21,8 @@ dependencies {
     mappings loom.officialMojangMappings()
     modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
-    implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.1'
-    modLocalRuntime("com.terraformersmc:modmenu:8.0.1")
+    implementation "com.google.code.findbugs:jsr305:3.0.1"
+    modLocalRuntime("com.terraformersmc:modmenu:7.0.1")
     implementation project(":common")
 }
 
@@ -84,6 +84,16 @@ publishing {
                         name = 'anvian'
                     }
                 }
+            // Remove Fabric and Minecraft platform deps from the published POM — these are
+            // environment-provided and must not leak as transitive dependencies.
+            pom.withXml {
+                asNode().dependencies.dependency.findAll {
+                    it.groupId.text() == 'net.fabricmc' ||
+                    it.groupId.text() == 'net.fabricmc.fabric-api' ||
+                    it.groupId.text() == 'com.mojang' ||
+                    it.groupId.text() == 'net.minecraft'
+                }.each { it.parent().remove(it) }
+            }
             }
         }
     }

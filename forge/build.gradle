@@ -5,7 +5,7 @@ plugins {
     id 'org.spongepowered.mixin' version '0.7-SNAPSHOT'
 }
 base {
-    archivesName = archivesName = "${mod_id}-forge-1.20"
+    archivesName = "${mod_id}-forge-1.20"
 }
 mixin {
     add(sourceSets.main, "${mod_id}.refmap.json")
@@ -117,6 +117,14 @@ publishing {
                         name = 'anvian'
                     }
                 }
+            }
+            // Remove Forge and Minecraft from the published POM — these are
+            // environment-provided and must not leak as transitive dependencies.
+            pom.withXml {
+                asNode().dependencies.dependency.findAll {
+                    it.groupId.text() == 'net.minecraftforge' ||
+                    it.groupId.text() == 'net.minecraft'
+                }.each { it.parent().remove(it) }
             }
         }
     }

@@ -6,7 +6,7 @@ plugins {
 }
 
 base {
-    archivesName = archivesName = "${mod_id}-forge-1.20.2"
+    archivesName = "${mod_id}-neoforge-1.20.2"
 }
 
 if (file('src/main/resources/META-INF/accesstransformer.cfg').exists()) {
@@ -80,6 +80,14 @@ publishing {
                         name = 'anvian'
                     }
                 }
+            // Remove NeoForge platform deps from the published POM — these are
+            // environment-provided and must not leak as transitive dependencies.
+            pom.withXml {
+                asNode().dependencies.dependency.findAll {
+                    it.groupId.text() == 'net.neoforged' ||
+                    it.groupId.text() == 'net.minecraft'
+                }.each { it.parent().remove(it) }
+            }
             }
         }
     }

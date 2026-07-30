@@ -2,7 +2,6 @@ package net.anvian.anvianslib.util;
 
 import net.anvian.anvianslib.config.TelemetryConfigManager;
 import net.anvian.anvianslib.platform.Services;
-import net.minecraft.SharedConstants;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -32,7 +31,7 @@ public class LibUtil {
      * @return The current Minecraft version as a string
      */
     public static String getMinecraftVersion() {
-        return SharedConstants.getCurrentVersion().getName();
+        return Services.PLATFORM.getGameVersion();
     }
 
     /**

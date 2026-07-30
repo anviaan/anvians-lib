@@ -40,6 +40,13 @@ publishing {
                         name = 'anvian'
                     }
                 }
+            // Remove Minecraft platform deps from the published POM.
+            pom.withXml {
+                asNode().dependencies.dependency.findAll {
+                    it.groupId.text() == 'com.mojang' ||
+                    it.groupId.text() == 'net.minecraft'
+                }.each { it.parent().remove(it) }
+            }
             }
         }
     }

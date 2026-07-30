@@ -28,4 +28,9 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
     public Path getConfigPath() {
         return FMLPaths.CONFIGDIR.get();
     }
+
+    @Override
+    public String getGameVersion() {
+        return FMLLoader.versionInfo().mcVersion();
+    }
 }

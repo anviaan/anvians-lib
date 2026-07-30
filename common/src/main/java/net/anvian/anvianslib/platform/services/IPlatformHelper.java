@@ -41,4 +41,11 @@ public interface IPlatformHelper {
      * @return The path to the config directory.
      */
     Path getConfigPath();
+
+    /**
+     * Gets the current Minecraft version string.
+     *
+     * @return The Minecraft version (e.g. "1.20").
+     */
+    String getGameVersion();
 }

@@ -26,4 +26,12 @@ public class FabricPlatformHelper implements IPlatformHelper {
     public Path getConfigPath() {
         return FabricLoader.getInstance().getConfigDir();
     }
+
+    @Override
+    public String getGameVersion() {
+        return FabricLoader.getInstance()
+                .getModContainer("minecraft")
+                .map(mod -> mod.getMetadata().getVersion().getFriendlyString())
+                .orElse("unknown");
+    }
 }
