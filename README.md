@@ -17,8 +17,8 @@ Add the following to your `build.gradle`:
 ```groovy
 repositories {
     maven {
-        name = 'Repsy Anvian'
-        url = 'https://repo.repsy.io/mvn/anvian/anvians-lib'
+        name = 'Reposilite Anvian'
+        url = 'https://maven.anvian.net/releases'
     }
 }
 ```
