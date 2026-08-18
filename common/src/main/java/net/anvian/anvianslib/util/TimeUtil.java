@@ -4,7 +4,9 @@ package net.anvian.anvianslib.util;
  * Utility class for converting between game ticks and seconds.
  * In Minecraft, 1 second equals 20 ticks.
  */
-public class TimeUtil {
+public final class TimeUtil {
+    private TimeUtil() {}
+
     /**
      * Converts game ticks to seconds.
      *

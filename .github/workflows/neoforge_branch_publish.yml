@@ -6,7 +6,8 @@ env:
   JAVA_VERSION: 17
   MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
   CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
-  REPSY_TOKEN: ${{ secrets.REPSY_TOKEN }}
+  REPOSILITE_USER: anvian
+  REPOSILITE_TOKEN: ${{ secrets.REPSY_TOKEN }}
   MODRINTH_ID: PuTjrq4T
   CURSEFORGE_ID: 1168509
 
@@ -15,9 +16,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check Environment Variables
-        run: env
-
       - name: Checkout Repository
         uses: actions/checkout@v3
         with:

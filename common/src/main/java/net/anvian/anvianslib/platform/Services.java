@@ -11,7 +11,10 @@ import java.util.ServiceLoader;
  * <p>This class uses the Java {@link ServiceLoader} SPI (Service Provider Interface)
  * mechanism to load platform-specific service implementations in a thread-safe manner.
  */
-public class Services {
+public final class Services {
+    private Services() {}
+
+    /** The platform implementation loaded through the Java service provider mechanism. */
     public static final IPlatformHelper PLATFORM = load(IPlatformHelper.class);
 
     /**

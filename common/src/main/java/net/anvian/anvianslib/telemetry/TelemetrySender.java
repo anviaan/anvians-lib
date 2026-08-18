@@ -17,7 +17,9 @@ import java.time.Duration;
  * telemetry endpoint or a local development endpoint depending on the provided flag.
  * Requests have a default timeout of 10 seconds to prevent hanging.
  */
-public class TelemetrySender {
+public final class TelemetrySender {
+    private TelemetrySender() {}
+
     private static final HttpClient HTTP_CLIENT = HttpClient.newHttpClient();
     private static final Duration REQUEST_TIMEOUT = Duration.ofSeconds(10);
 
@@ -35,7 +37,9 @@ public class TelemetrySender {
         if (modId == null || modVersion == null || gameVersion == null || loader == null) {
             throw new NullPointerException("modId, modVersion, gameVersion, and loader must not be null");
         }
-        URI url = isProduction ? URI.create("https://anvian.net/telemetry/data") : URI.create("http://localhost:8082/telemetry/data");
+        URI url = isProduction
+                ? URI.create("https://anvian.net/telemetry/data")
+                : URI.create("http://localhost:8082/telemetry/data");
         JsonObject jsonInput = new JsonObject();
         jsonInput.addProperty("mod_id", modId);
         jsonInput.addProperty("mod_version", modVersion);
@@ -49,7 +53,11 @@ public class TelemetrySender {
                     .POST(HttpRequest.BodyPublishers.ofString(jsonInput.toString()))
                     .build();
             HttpResponse<String> response = HTTP_CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
-            Constants.LOG.info("Telemetry data sent: {}", response.statusCode());
+            if (response.statusCode() >= 200 && response.statusCode() < 300) {
+                Constants.LOG.info("Telemetry data sent: {}", response.statusCode());
+            } else {
+                Constants.LOG.warn("Telemetry endpoint returned status {} for {}", response.statusCode(), modId);
+            }
         } catch (IOException | InterruptedException e) {
             if (e instanceof InterruptedException) {
                 Thread.currentThread().interrupt();
@@ -58,4 +66,3 @@ public class TelemetrySender {
         }
     }
 }
-

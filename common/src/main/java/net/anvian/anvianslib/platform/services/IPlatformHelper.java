@@ -2,6 +2,7 @@ package net.anvian.anvianslib.platform.services;
 
 import java.nio.file.Path;
 
+/** Platform-specific operations exposed to common code. */
 public interface IPlatformHelper {
 
     /**

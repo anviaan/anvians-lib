@@ -11,7 +11,9 @@ import java.nio.file.Path;
 /**
  * Utility class providing various helper methods for mod development.
  */
-public class LibUtil {
+public final class LibUtil {
+    private LibUtil() {}
+
     /**
      * Gets the current Minecraft version name.
      *
@@ -28,12 +30,10 @@ public class LibUtil {
      * @throws RuntimeException if directory creation fails
      */
     private static void createDirectoryIfNotExists(Path dirPath) {
-        if (Files.notExists(dirPath)) {
-            try {
-                Files.createDirectories(dirPath);
-            } catch (IOException e) {
-                throw new RuntimeException("Failed to create directory: " + dirPath, e);
-            }
+        try {
+            Files.createDirectories(dirPath);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to create directory: " + dirPath, e);
         }
     }
 
@@ -72,7 +72,6 @@ public class LibUtil {
             throw new NullPointerException("modVersion must not be null");
         }
         Path modConfigDir = Services.PLATFORM.getConfigPath().resolve(modId);
-        createDirectoryIfNotExists(modConfigDir);
 
         TelemetryConfigManager.getInstance().initialize(modConfigDir.toFile());
         TelemetryConfigManager.getInstance().sendTelemetryData(modId, modVersion);

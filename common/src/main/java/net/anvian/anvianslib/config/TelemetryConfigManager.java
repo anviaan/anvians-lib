@@ -52,15 +52,14 @@ public class TelemetryConfigManager extends Config<TelemetryConfigManager.Teleme
      * @param gameVersion the game (Minecraft) version string
      */
     public void sendTelemetryData(String modId, String modVersion, String gameVersion) {
-        getTelemetryConfig().filter(TelemetryConfig::isEnableTelemetry).ifPresent(cfg ->
-                TelemetrySender.send(
+        getTelemetryConfig()
+                .filter(TelemetryConfig::isEnableTelemetry)
+                .ifPresent(cfg -> TelemetrySender.send(
                         modId,
                         modVersion,
                         gameVersion,
                         Services.PLATFORM.getPlatformName(),
-                        !Services.PLATFORM.isDevelopmentEnvironment()
-                )
-        );
+                        !Services.PLATFORM.isDevelopmentEnvironment()));
     }
 
     /**
@@ -87,8 +86,10 @@ public class TelemetryConfigManager extends Config<TelemetryConfigManager.Teleme
      * Simple POJO representing the telemetry configuration options serialized to JSON.
      */
     public static class TelemetryConfig {
+        /** Whether telemetry requests are allowed. */
         public boolean enableTelemetry;
 
+        /** Creates a telemetry configuration with telemetry enabled by default. */
         public TelemetryConfig() {
             enableTelemetry = true;
         }

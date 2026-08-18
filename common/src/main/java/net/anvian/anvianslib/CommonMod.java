@@ -7,7 +7,9 @@ import net.anvian.anvianslib.util.LibUtil;
  *
  * <p>This class provides initialization logic shared by both Fabric and NeoForge loaders.
  */
-public class CommonMod {
+public final class CommonMod {
+    private CommonMod() {}
+
     /**
      * Initialize the Anvian's Lib common module.
      *

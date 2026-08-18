@@ -1,103 +1,77 @@
 # Anvian's Lib
 
-This library is designed for use in my mods and includes various helpful functions for my projects. Additionally, it
-introduces telemetry to track how many players are using my mods. If desired, telemetry can be disabled via the
-configuration file. For more details, visit the [Telemetry](https://anvian.net/telemetry) page.
+Shared runtime utilities for Anvian's Minecraft mods.
 
-## How to use
+The current line targets **Minecraft 26.1**, **Java 25**, **Fabric**, and **NeoForge**.
 
-Add the following to your `gradle.properties`:
+## Installation
+
+Add the version to `gradle.properties`:
 
 ```properties
-anvianslib_version=<version>
+anvianslib_version=1.5.0
 ```
 
-Add the following to your `build.gradle`:
+Add the repository to the project that consumes the library:
 
 ```groovy
 repositories {
     maven {
-        name = 'Reposilite Anvian'
+        name = 'Anvian'
         url = 'https://maven.anvian.net/releases'
     }
 }
 ```
 
-- On Common:
+Use the artifact that matches the source set:
 
 ```groovy
-  implementation "net.anvian.anvianslib:anvianslib-common-1.21:${anvianslib_version}"
+// Common
+implementation "net.anvian.anvianslib:anvianslib-common-26.1:${anvianslib_version}"
+
+// Fabric
+implementation "net.anvian.anvianslib:anvianslib-fabric-26.1:${anvianslib_version}"
+
+// NeoForge
+implementation "net.anvian.anvianslib:anvianslib-neoforge-26.1:${anvianslib_version}"
 ```
 
-- On Fabric:
+## Configuration
 
-```groovy
-  modImplementation "net.anvian.anvianslib:anvianslib-fabric-1.21:${anvianslib_version}"
+Create a `Config<T>` subclass and initialize it with the mod id:
+
+```java
+configs.initialize(Constants.MOD_ID);
 ```
 
-- On Forge:
+The library resolves the platform config directory, creates `<config>/<mod_id>`, and stores the file as
+`<mod_id>-config.json`.
 
-```groovy
-  implementation "net.anvian.anvianslib:anvianslib-forge-1.21:${anvianslib_version}"
+## Registry helpers
+
+`RegistryUtil` centralizes namespaced registry boilerplate:
+
+```java
+RegistryUtil.register(BuiltInRegistries.ITEM, MOD_ID, "example", item);
+ResourceKey<Block> key = RegistryUtil.key(Registries.BLOCK, MOD_ID, "example");
+TagKey<Item> tag = RegistryUtil.tag(Registries.ITEM, MOD_ID, "examples");
 ```
 
-- On NeoForge:
+## Telemetry
 
-```groovy
-  implementation "net.anvian.anvianslib:anvianslib-neoforge-1.21:${anvianslib_version}"
-```
-
-## Telemetry Integration
-
-Anvian's Lib includes built-in telemetry to track mod usage and usage patterns. Users can disable telemetry via configuration file if desired.
-
-### Quick Start
-
-To send telemetry data from your mod:
-
-1. **Initialize telemetry during mod startup:**
+Set up telemetry during mod initialization:
 
 ```java
 LibUtil.setupTelemetry("your_mod_id", "your_mod_version");
 ```
 
-This will:
-- Create a config directory for your mod
-- Initialize the telemetry config file
-- Send initial telemetry data
-
-2. **Send custom telemetry data (optional):**
-
-```java
-String modId = "your_mod_id";
-String modVersion = "1.0.0";
-String gameVersion = LibUtil.getMinecraftVersion();
-String loader = "Fabric"; // or "NeoForge", "Forge", etc.
-
-TelemetrySender.send(modId, modVersion, gameVersion, loader, true);
-```
-
-The last parameter (`true`) indicates production environment. Set to `false` for development.
-
-### Configuration
-
-Telemetry configuration is stored at:
-- **Windows:** `%appdata%/minecraft/config/your_mod_id/telemetry.json`
-- **Linux/Mac:** `~/.minecraft/config/your_mod_id/telemetry.json`
-
-Users can disable telemetry by setting `enableTelemetry` to `false` in the JSON file:
+Telemetry configuration is stored at `<config>/<your_mod_id>/telemetry-config.json`:
 
 ```json
 {
-  "enableTelemetry": false
+  "enable_telemetry": false
 }
 ```
 
-### Data Collected
-
-The following data is sent to track mod usage:
-- Mod ID and version
-- Minecraft version
-- Loader name (Fabric, NeoForge, etc.)
-
-No personal or sensitive data is collected.
+When enabled, the library sends the mod id and version, Minecraft version, and loader name. No personal data is
+collected. Users can disable telemetry at any time by changing the configuration value.

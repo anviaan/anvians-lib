@@ -1,20 +1,8 @@
-### Changed
-- Converted TelemetrySender HttpClient to thread-safe static singleton
-- Added HTTP request timeout (10 seconds) for telemetry requests
-
 ### Added
-- Added null parameter validation on public APIs
-- Added Javadoc documentation to CommonMod and Services classes
-- Added REQUEST_TIMEOUT constant for HTTP requests
+- Added `Config.initialize(String)` for platform-resolved configuration directories.
+- Added documented `RegistryUtil` helpers for registry values, resource keys, and tag keys.
 
-### Removed
-- Removed deprecated sendTelemetryDataLegacy method
-- Removed unused eventBus parameter from NeoForgeMod constructor
-- Extracted and removed duplicated directory creation logic
-
-### Improved
-- Refactored duplicate directory creation into createDirectoryIfNotExists helper method
-- Enhanced code quality and maintainability
-- Improved API robustness with input validation
-- Added comprehensive inline documentation
-- Port to minecraft 26.1
+### Fixed
+- Configurations now create their directories, use UTF-8, and recover from malformed or null JSON.
+- Updated 26.1 resource metadata and removed references to missing mod icons.
+- Telemetry now distinguishes successful HTTP responses from non-2xx responses.
